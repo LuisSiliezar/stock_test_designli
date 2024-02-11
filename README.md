@@ -1,16 +1,19 @@
-# stock_test_designli
+# Hi, nice to meet you!
 
-A new Flutter project.
+Before you continue with the evaluation for this app, there are some things that you need in order to get the project up and running.
 
-## Getting Started
+## Step 1: Create an `APP_KEY_FINNHUB` in a `.env` file
 
-This project is a starting point for a Flutter application.
+## Step 2: Accessing Candle Values
 
-A few resources to get you started if this is your first Flutter project:
+The second step differs from the original scope of the task. In order to get Candle values in Finnhub, it requires a paid account. However, I found an alternative using [Polygon.io](https://polygon.io/) which allowed me to achieve the same result 🤞.
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+In order to access data from Polygon.io, the following is needed:
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Step 3: Create an `API_KEY_POLYGON` in a `.env` file
+
+And that's it for now! You can get the project up and running.
+
+Note: Some of the stock data might be confusing due to my lack of knowledge in that area. I hope I got the correct values. If there's something I could improve on, I will gladly receive feedback.
+
+Thanks in advance, and I hope to get to know you soon 👋
