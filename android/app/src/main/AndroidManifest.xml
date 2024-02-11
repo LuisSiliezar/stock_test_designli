@@ -2,7 +2,7 @@
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <application
-        android:label="stock_test_designli"
+        android:label="Stock App"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
