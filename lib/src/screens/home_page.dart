@@ -73,7 +73,7 @@ class HomePage extends StatelessWidget {
                       color: Colors.white, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 )),
-          )
+          ),
         ]),
       ),
     );

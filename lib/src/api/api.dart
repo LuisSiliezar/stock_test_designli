@@ -18,11 +18,3 @@ Future<List<Candles>> getAllStocks() async {
   }
   return allStocksCandleValuesFromApi;
 }
-
-getAllStockNames() async {
-  final dio = Dio();
-  final response = await dio.get(
-      'https://finnhub.io/api/v1/stock/symbol?exchange=US',
-      options: Options(headers: {'X-Finnhub-Token': apiKeyFinnhub}));
-  return response;
-}

@@ -6,7 +6,7 @@ import 'package:stock_test_designli/src/models/candles.dart';
 import 'package:stock_test_designli/src/provider/socket_provider.dart';
 import 'package:stock_test_designli/src/screens/stocks/select_stock/select_stock_page.dart';
 import 'package:stock_test_designli/src/services/socket_services.dart';
-import 'package:stock_test_designli/src/utils/authentification.dart';
+import 'package:stock_test_designli/src/utils/auth.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AllStocksPage extends StatefulWidget {
@@ -118,7 +118,7 @@ class _AllStocksPageState extends State<AllStocksPage> {
                     ),
                   ),
                   SizedBox(
-                    height: 280,
+                    height: 300,
                     child: Consumer<SocketProvider>(
                         builder: (context, value, child) {
                       return watchedStockCards(value);

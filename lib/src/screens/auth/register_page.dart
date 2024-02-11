@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stock_test_designli/src/screens/stocks/all_stocks/all_stocks_page.dart';
-import 'package:stock_test_designli/src/utils/authentification.dart';
+import 'package:stock_test_designli/src/utils/auth.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
