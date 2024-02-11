@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:stock_test_designli/src/models/candles.dart';
-import 'package:stock_test_designli/src/models/stocks.dart';
 
 String? apiKeyFinnhub = dotenv.env['API_KEY_FINNHUB'];
 String? apiKeyPolygon = dotenv.env['API_KEY_POLYGON'];
@@ -25,4 +24,5 @@ getAllStockNames() async {
   final response = await dio.get(
       'https://finnhub.io/api/v1/stock/symbol?exchange=US',
       options: Options(headers: {'X-Finnhub-Token': apiKeyFinnhub}));
+  return response;
 }

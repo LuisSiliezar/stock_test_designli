@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "394138245821",
+    "project_id": "stocks-designli",
+    "storage_bucket": "stocks-designli.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:394138245821:android:f7801a499e12110e7235d4",
+        "android_client_info": {
+          "package_name": "com.example.stock_test_designli"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjjnbkxPtBnCbSVs7ZlAtqWc7AkfpMBvg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:stock_test_designli/src/api/api.dart';
 
 class SelectStockPage extends StatefulWidget {
   const SelectStockPage({super.key});
@@ -13,9 +12,9 @@ class _SelectStockPageState extends State<SelectStockPage> {
   // late String _selected;
   @override
   void initState() {
-    getAllStockNames().then((data) {
-      print(data);
-    });
+    // getAllStockNames().then((data) {
+    //   print(data);
+    // });
 
     super.initState();
   }

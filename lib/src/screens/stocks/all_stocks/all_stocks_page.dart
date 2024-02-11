@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_test_designli/src/api/api.dart';
@@ -5,6 +6,7 @@ import 'package:stock_test_designli/src/models/candles.dart';
 import 'package:stock_test_designli/src/provider/socket_provider.dart';
 import 'package:stock_test_designli/src/screens/stocks/select_stock/select_stock_page.dart';
 import 'package:stock_test_designli/src/services/socket_services.dart';
+import 'package:stock_test_designli/src/utils/authentification.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class AllStocksPage extends StatefulWidget {
@@ -15,6 +17,8 @@ class AllStocksPage extends StatefulWidget {
 }
 
 class _AllStocksPageState extends State<AllStocksPage> {
+  FirebaseAuth auth = FirebaseAuth.instance;
+
   TrackballBehavior trackballBehavior = TrackballBehavior();
   late List<Candles> allStocksCandleValues = [];
   bool isLoading = true;
@@ -42,21 +46,38 @@ class _AllStocksPageState extends State<AllStocksPage> {
             child: CircularProgressIndicator(),
           )
         : Scaffold(
-            backgroundColor: Colors.black54,
+            backgroundColor: Colors.black,
             appBar: AppBar(
               iconTheme: const IconThemeData(color: Colors.white),
-              backgroundColor: Colors.black54,
+              backgroundColor: Colors.black,
+              centerTitle: false,
+              title: SizedBox(
+                width: 250,
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  '👋  ${auth.currentUser!.email}',
+                  style: const TextStyle(color: Colors.white, fontSize: 18),
+                ),
+              ),
               actions: [
                 IconButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                const SelectStockPage(),
-                          ));
-                    },
-                    icon: const Icon(Icons.notification_add))
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              const SelectStockPage(),
+                        ));
+                  },
+                  icon: const Icon(Icons.notification_add),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    disconnectFromSocket(context);
+                    await AuthenticationHelper().signOut(context);
+                  },
+                  icon: const Icon(Icons.logout),
+                ),
               ],
             ),
             body: Column(

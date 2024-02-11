@@ -1,12 +1,16 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_test_designli/src/provider/socket_provider.dart';
 import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/status.dart' as status;
+
+String? apiKeyFinnhub = dotenv.env['API_KEY_FINNHUB'];
 
 void connectToSocket(BuildContext context) {
-  final channel = IOWebSocketChannel.connect(
-      'wss://ws.finnhub.io?token=cn370d9r01qtdiert63gcn370d9r01qtdiert640');
+  final channel =
+      IOWebSocketChannel.connect('wss://ws.finnhub.io?token=$apiKeyFinnhub');
 
   channel.stream.listen((message) {
     final items = jsonDecode(message)['data'] as List?;
@@ -29,4 +33,10 @@ void connectToSocket(BuildContext context) {
   channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': 'AAPL.US'}));
   channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': 'MSFT.US'}));
   channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': 'AMZN.US'}));
+}
+
+void disconnectFromSocket(BuildContext context) {
+  final channel =
+      IOWebSocketChannel.connect('wss://ws.finnhub.io?token=$apiKeyFinnhub');
+  channel.sink.close(status.goingAway);
 }
