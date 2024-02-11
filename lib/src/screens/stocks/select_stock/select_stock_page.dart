@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:stock_test_designli/src/api/api.dart';
 
-class SelectStockPage extends StatelessWidget {
+class SelectStockPage extends StatefulWidget {
   const SelectStockPage({super.key});
 
   @override
+  State<SelectStockPage> createState() => _SelectStockPageState();
+}
+
+class _SelectStockPageState extends State<SelectStockPage> {
+  // late Future<List<String>> futureCountry;
+  // late String _selected;
+  @override
+  void initState() {
+    getAllStockNames().then((data) {
+      print(data);
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    TextEditingController emailFormController = TextEditingController();
-    TextEditingController passwordFormController = TextEditingController();
+    TextEditingController stockNameFormController = TextEditingController();
+    TextEditingController priceFormController = TextEditingController();
 
     return Scaffold(
       backgroundColor: Colors.black,
@@ -30,8 +47,37 @@ class SelectStockPage extends StatelessWidget {
                         fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 48),
+                  // FutureBuilder<List<String>>(
+                  //   future: futureCountry,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.hasData) {
+                  //       return DropdownButton(
+                  //         value: _selected,
+                  //         icon: Icon(Icons.arrow_drop_down),
+                  //         iconSize: 30,
+                  //         elevation: 16,
+                  //         style: TextStyle(color: Colors.black),
+                  //         onChanged: (newValue) {
+                  //           setState(() {
+                  //             _selected = newValue!;
+                  //           });
+                  //         },
+                  //         items: snapshot.data
+                  //             ?.map<DropdownMenuItem<String>>((String value) {
+                  //           return DropdownMenuItem<String>(
+                  //             value: value,
+                  //             child: Text(value),
+                  //           );
+                  //         }).toList(),
+                  //       );
+                  //     } else if (snapshot.hasError) {
+                  //       return Text("${snapshot.error}");
+                  //     }
+                  //     return CircularProgressIndicator();
+                  //   },
+                  // ),
                   TextFormField(
-                    controller: emailFormController,
+                    controller: stockNameFormController,
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(
@@ -43,7 +89,7 @@ class SelectStockPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   TextFormField(
-                    controller: passwordFormController,
+                    controller: priceFormController,
                     style: const TextStyle(color: Colors.white),
                     cursorColor: Colors.white,
                     decoration: const InputDecoration(

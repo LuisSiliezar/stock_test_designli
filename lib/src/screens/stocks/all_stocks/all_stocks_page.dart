@@ -1,9 +1,9 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:stock_test_designli/src/common_widgets/designli_drawer/designli_drawer.dart';
+import 'package:stock_test_designli/src/api/api.dart';
 import 'package:stock_test_designli/src/models/candles.dart';
 import 'package:stock_test_designli/src/provider/socket_provider.dart';
+import 'package:stock_test_designli/src/screens/stocks/select_stock/select_stock_page.dart';
 import 'package:stock_test_designli/src/services/socket_services.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
@@ -16,43 +16,18 @@ class AllStocksPage extends StatefulWidget {
 
 class _AllStocksPageState extends State<AllStocksPage> {
   TrackballBehavior trackballBehavior = TrackballBehavior();
-  late List<Candles> candleValuesAPPL = [];
-  late List<Candles> candleValuesAMZN = [];
-
-  void getDataFoAPPLCandles() async {
-    final dio = Dio();
-    final response = await dio.get(
-        'https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2023-01-09?adjusted=true&apiKey=upYFFQBkTzGNnkzutGxiOp16Rp9pbJtp');
-
-    final items = response.data['results'];
-
-    if (items != null) {
-      for (var element in items) {
-        print(element);
-        candleValuesAPPL.add(Candles.fromMap(element));
-      }
-    }
-  }
-
-  void getDataForAMZNCandles() async {
-    final dio = Dio();
-    final response = await dio.get(
-        'https://api.polygon.io/v2/aggs/grouped/locale/us/market/stocks/2023-01-09?adjusted=true&apiKey=upYFFQBkTzGNnkzutGxiOp16Rp9pbJtp');
-    final items = response.data['results'];
-
-    if (items != null) {
-      for (var element in items) {
-        print(element);
-        candleValuesAMZN.add(Candles.fromMap(element));
-      }
-    }
-  }
+  late List<Candles> allStocksCandleValues = [];
+  bool isLoading = true;
 
   @override
   void initState() {
     connectToSocket(context);
-    getDataFoAPPLCandles();
-    getDataForAMZNCandles();
+    getAllStocks().then((candlesFromAPI) {
+      setState(() {
+        allStocksCandleValues = candlesFromAPI;
+        isLoading = false;
+      });
+    });
     trackballBehavior = TrackballBehavior(
       enable: true,
       activationMode: ActivationMode.singleTap,
@@ -62,96 +37,101 @@ class _AllStocksPageState extends State<AllStocksPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black54,
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        backgroundColor: Colors.black54,
-      ),
-      drawer: const DesignliDrawer(),
-      body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.fromLTRB(12, 8, 0, 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return isLoading
+        ? const Center(
+            child: CircularProgressIndicator(),
+          )
+        : Scaffold(
+            backgroundColor: Colors.black54,
+            appBar: AppBar(
+              iconTheme: const IconThemeData(color: Colors.white),
+              backgroundColor: Colors.black54,
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext context) =>
+                                const SelectStockPage(),
+                          ));
+                    },
+                    icon: const Icon(Icons.notification_add))
+              ],
+            ),
+            body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text(
-                    'Stock value',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 21,
-                        fontWeight: FontWeight.bold),
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12, 8, 0, 14),
+                    child: Text(
+                      'Stock value',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 21,
+                          fontWeight: FontWeight.bold),
+                    ),
                   ),
-                  Icon(
-                    Icons.swap_vert,
-                    color: Colors.white,
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 300,
-              child: ListView(children: [
-                candleChartData('Apple stock', candleValuesAPPL),
-                candleChartData('Amazon stock', candleValuesAMZN),
-              ]),
-            ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(12, 16, 0, 14),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Watched list',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 21,
-                        fontWeight: FontWeight.bold),
+                  SizedBox(
+                    height: 300,
+                    child: candleChartData('All stocks', allStocksCandleValues),
                   ),
-                  Icon(
-                    Icons.swap_vert,
-                    color: Colors.white,
-                  )
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 280,
-              child: Consumer<SocketProvider>(builder: (context, value, child) {
-                return watchedStockCards(value);
-              }),
-            ),
-          ]),
-    );
+                  const Padding(
+                    padding: EdgeInsets.fromLTRB(12, 16, 0, 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Watched list',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 21,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        Icon(
+                          Icons.swap_vert,
+                          color: Colors.white,
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 280,
+                    child: Consumer<SocketProvider>(
+                        builder: (context, value, child) {
+                      return watchedStockCards(value);
+                    }),
+                  ),
+                ]),
+          );
   }
 
   SizedBox candleChartData(String title, List<Candles> candleValues) {
     return SizedBox(
       height: MediaQuery.of(context).size.height / 3,
       child: SfCartesianChart(
-          title: ChartTitle(
-              text: title, textStyle: const TextStyle(color: Colors.white)),
           primaryXAxis: const CategoryAxis(),
+          primaryYAxis: const NumericAxis(
+            interval: 4,
+            minimum: 0,
+            maximum: 100,
+          ),
           tooltipBehavior: TooltipBehavior(enable: true),
           trackballBehavior: trackballBehavior,
           zoomPanBehavior:
-              ZoomPanBehavior(zoomMode: ZoomMode.x, enablePanning: true),
+              ZoomPanBehavior(zoomMode: ZoomMode.x, enablePanning: false),
           series: <CandleSeries<Candles, String>>[
             CandleSeries<Candles, String>(
               bearColor: Colors.red,
               bullColor: Colors.green,
               dataSource: candleValues,
-              xValueMapper: (Candles sales, _) =>
-                  DateTime.fromMillisecondsSinceEpoch(sales.t!.toInt() * 1000)
-                      .toString(),
-              lowValueMapper: (Candles sales, _) => sales.v,
-              highValueMapper: (Candles sales, _) => sales.v,
-              openValueMapper: (Candles sales, _) => sales.c,
-              closeValueMapper: (Candles sales, _) => sales.v,
-            )
+              xValueMapper: (Candles sales, _) => sales.x,
+              lowValueMapper: (Candles sales, _) => sales.l,
+              highValueMapper: (Candles sales, _) => sales.h,
+              openValueMapper: (Candles sales, _) => sales.o,
+              closeValueMapper: (Candles sales, _) => sales.c,
+            ),
           ]),
     );
   }
@@ -159,7 +139,10 @@ class _AllStocksPageState extends State<AllStocksPage> {
   GridView watchedStockCards(SocketProvider value) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 1, crossAxisSpacing: 0, mainAxisSpacing: 0),
+          mainAxisExtent: 180,
+          crossAxisCount: 1,
+          crossAxisSpacing: 0,
+          mainAxisSpacing: 0),
       itemCount: value.trades.length,
       itemBuilder: (context, index) {
         final currentValue = value.trades[index];
@@ -168,7 +151,6 @@ class _AllStocksPageState extends State<AllStocksPage> {
                 ? false
                 : true
             : true;
-        var valuen = (currentValue.margin / currentValue.value) / 100;
         return Container(
           padding: const EdgeInsets.all(18),
           margin: const EdgeInsets.all(5),
