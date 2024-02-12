@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:stock_test_designli/src/provider/socket_provider.dart';
+import 'package:stock_test_designli/src/provider/stock_price_provider.dart';
 import 'package:stock_test_designli/src/screens/home_page.dart';
 import 'package:stock_test_designli/src/screens/stocks/all_stocks/all_stocks_page.dart';
 import 'package:stock_test_designli/src/services/notification_service.dart';
@@ -21,12 +22,11 @@ Future<void> main() async {
     null,
     [
       NotificationChannel(
-          channelGroupKey: 'basic_channel_group',
-          channelKey: 'basic_channel',
-          channelName: 'Basic notifications',
-          channelDescription: 'Notification channel for basic tests',
-          defaultColor: Color(0xFF9D50DD),
-          ledColor: Colors.white)
+        channelGroupKey: 'basic_channel_group',
+        channelKey: 'basic_channel',
+        channelName: 'Basic notifications',
+        channelDescription: 'Notification channel for basic tests',
+      )
     ],
     channelGroups: [
       NotificationChannelGroup(
@@ -73,7 +73,10 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(
           create: (_) => SocketProvider(),
-        )
+        ),
+        ChangeNotifierProvider(
+          create: (_) => StockPriceProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

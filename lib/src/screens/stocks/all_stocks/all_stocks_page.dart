@@ -80,55 +80,58 @@ class _AllStocksPageState extends State<AllStocksPage> {
                 ),
               ],
             ),
-            body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12, 8, 0, 14),
-                    child: Text(
-                      'Stock value',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 21,
-                          fontWeight: FontWeight.bold),
+            body: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 14),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(bottom: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Watched list',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 21,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Icon(
+                            Icons.swap_horiz,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: candleChartData('All stocks', allStocksCandleValues),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.fromLTRB(12, 16, 0, 14),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Watched list',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 21,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Icon(
-                          Icons.swap_vert,
-                          color: Colors.white,
-                        )
-                      ],
+                    SizedBox(
+                      height: 200,
+                      child: Consumer<SocketProvider>(
+                          builder: (context, value, child) {
+                        return watchedStockCards(value);
+                      }),
                     ),
-                  ),
-                  SizedBox(
-                    height: 300,
-                    child: Consumer<SocketProvider>(
-                        builder: (context, value, child) {
-                      return watchedStockCards(value);
-                    }),
-                  ),
-                ]),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(0, 24, 0, 8),
+                      child: Text(
+                        'Stocks',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 21,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 300,
+                      child: candleChartData(allStocksCandleValues),
+                    ),
+                  ]),
+            ),
           );
   }
 
-  SizedBox candleChartData(String title, List<Candles> candleValues) {
+  SizedBox candleChartData(List<Candles> candleValues) {
     return SizedBox(
       height: MediaQuery.of(context).size.height / 3,
       child: SfCartesianChart(
@@ -160,10 +163,12 @@ class _AllStocksPageState extends State<AllStocksPage> {
   GridView watchedStockCards(SocketProvider value) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          mainAxisExtent: 180,
-          crossAxisCount: 1,
-          crossAxisSpacing: 0,
-          mainAxisSpacing: 0),
+        mainAxisExtent: 350,
+        crossAxisCount: 1,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+      ),
+      scrollDirection: Axis.horizontal,
       itemCount: value.trades.length,
       itemBuilder: (context, index) {
         final currentValue = value.trades[index];
@@ -172,6 +177,7 @@ class _AllStocksPageState extends State<AllStocksPage> {
                 ? false
                 : true
             : true;
+
         return Container(
           padding: const EdgeInsets.all(18),
           margin: const EdgeInsets.all(5),
@@ -205,7 +211,7 @@ class _AllStocksPageState extends State<AllStocksPage> {
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  '(${currentValue.margin})',
+                  '(${currentValue.margin.toStringAsFixed(3)})',
                   style: TextStyle(
                       color: isGreater ? Colors.green : Colors.red,
                       fontSize: 18),

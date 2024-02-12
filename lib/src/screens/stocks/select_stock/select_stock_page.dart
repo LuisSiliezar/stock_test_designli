@@ -1,5 +1,7 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:stock_test_designli/src/api/api.dart';
+import 'package:provider/provider.dart';
+import 'package:stock_test_designli/src/provider/stock_price_provider.dart';
 
 class SelectStockPage extends StatefulWidget {
   const SelectStockPage({super.key});
@@ -76,7 +78,22 @@ class _SelectStockPageState extends State<SelectStockPage> {
                 ],
               ),
               GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  context.read<StockPriceProvider>().setStockData(
+                      newStockSymbol: selectedValue,
+                      newStockPrice: priceFormController.text);
+                  if (priceFormController.text.isNotEmpty) {
+                    AwesomeNotifications().createNotification(
+                      content: NotificationContent(
+                        id: 1,
+                        channelKey: 'basic_channel',
+                        title: 'Success',
+                        body:
+                            '${priceFormController.text} price limit was set to $selectedValue',
+                      ),
+                    );
+                  }
+                },
                 child: Container(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 24),
